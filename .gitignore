@@ -1,4 +1,5 @@
 .*
 *.pyc
 config.yml
-!.gitignore
+*.session
+*.log

@@ -5,5 +5,5 @@ __all__ = [
   '_current_path'
 ]
 _current_path = os.path.dirname(os.path.realpath(__file__))
-with open(f'{_current_path}/config.yml') as _f:
+with open(f'{_current_path}/config.yml', encoding='utf-8') as _f:
   config = yaml.load(_f.read(),Loader = yaml.SafeLoader)

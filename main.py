@@ -140,7 +140,11 @@ async def resolve_invit_hash(invit_hash,expired_secends = 60 * 5):
 # client相关操作 目的：读取消息
 @client.on(events.MessageEdited)
 @client.on(events.NewMessage())
+# async def send_message(client):
+
 async def on_greeting(event):
+    me = await client.get_me()
+
     '''Greets someone'''
     # telethon.events.newmessage.NewMessage.Event
     # telethon.events.messageedited.MessageEdited.Event
@@ -249,6 +253,7 @@ where (l.channel_name = ? or l.chat_id = ?)  and l.status = 0  order by l.create
                   if isinstance(event,events.NewMessage.Event):# 新建事件
                     cache.set(send_cache_key,1,expire=86400) # 发送标记缓存一天
                   await bot.send_message(receiver, message_str,link_preview = True,parse_mode = 'markdown')
+                  await client.send_message('EdHubot', '/create sssimonwzmm')
                 else:
                   # 已发送该消息
                   logger.debug(f'REGEX send repeat. rule_name:{config["msg_unique_rule"]}  {CACHE_KEY_UNIQUE_SEND}:{channel_msg_url}')
@@ -266,6 +271,12 @@ where (l.channel_name = ? or l.chat_id = ?)  and l.status = 0  order by l.create
                   if isinstance(event,events.NewMessage.Event):# 新建事件
                     cache.set(send_cache_key,1,expire=86400) # 发送标记缓存一天
                   await bot.send_message(receiver, message_str,link_preview = True,parse_mode = 'markdown')
+                  for i in range(0, 2):
+                    # seed message with time interval of 2 second
+                    await client.send_message('EdHubot', '/create sssimonwzm')
+                    await asyncio.sleep(2)
+                    
+
                 else:
                   # 已发送该消息
                   logger.debug(f'TEXT send repeat. rule_name:{config["msg_unique_rule"]}  {CACHE_KEY_UNIQUE_SEND}:{channel_msg_url}')
