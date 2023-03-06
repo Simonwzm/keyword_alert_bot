@@ -1,5 +1,27 @@
+# Automation platform for Telegram -- modified from Hootrix/keyword_alert_bot
 
-# 🤖Telegram keyword alert bot ⏰
+## Introduction
+
+This is an automation platform for telegram, based on telethon, python 3.7+, and forked from [Hootrix/keyword_alert_bot](https://github.com/Hootrix/keyword_alert_bot/)
+
+Telethon is a pure Python 3 MTProto API Telegram client library, which is used to interact with Telegram's API. It can be used to build Telegram clients, or to perform advanced operations on behalf of a user, thus imaging that you can do anything that the official Telegram clients can do, and more, such as automatic message forwarding, checkin once a day, sending a message after receiving a keyword from a channel, etc.
+
+Thanks to the repo [Hootrix/keyword_alert_bot](https://github.com/Hootrix/keyword_alert_bot/), most of the framework has been completed, and I have made some modifications to the code to make it more suitable for my own needs. You can also understand the framework according to some of my code comments and then add your own features!
+
+**I've add a message sending task in the keyword notification feature, so that for example you can immediately send a sign-in message to a bot right after you receive a registeration open message.**
+
+
+Telethon是一个纯Python 3 MTProto API Telegram客户端库，用于与Telegram的API互动。它可以用来构建Telegram客户端，或者代表用户进行高级操作，从而让你可以做任何Telegram官方客户端可以做的事情，甚至更多，比如自动转发消息，每天签到一次，在收到一个频道的关键词后发送消息，等等。
+
+感谢repo[Hootrix/keyword_alert_bot](https://github.com/Hootrix/keyword_alert_bot/)的工作，大部分的框架已经完成，我对代码做了一些修改，使其更适合我自己的需要。你也可以按照我的一些注释去理解框架然后自己增加功能！
+
+**我在关键词提醒功能中添加了一个消息发送任务，这样，例如你可以在收到注册开放消息后立即向机器人发送一个开通账户的消息**
+
+> 以下是fork仓库的文档
+
+---
+
+## 🤖Telegram keyword alert bot ⏰
 
 
 用于提醒 频道/群组 关键字消息

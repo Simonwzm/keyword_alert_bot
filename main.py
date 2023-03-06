@@ -1,4 +1,5 @@
 #coding=utf-8
+# 主功能文件
 from telethon import TelegramClient, events, sync, errors
 from db import utils
 import socks,os,datetime
