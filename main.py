@@ -19,6 +19,8 @@ from telethon.tl.types import PeerChannel
 from telethon.extensions import markdown,html
 from asyncstdlib.functools import lru_cache as async_lru_cache
 import asyncio
+import captcha_ocr as ocr
+import re
 
 # 配置访问tg服务器的代理
 proxy = None
@@ -53,6 +55,7 @@ def js_to_py_re(rx):
 
 def is_regex_str(string):
   return regex.search(r'^/.*/[a-zA-Z]*?$',string)
+
 
 @async_lru_cache(maxsize=256)
 async def client_get_entity(entity,_):
@@ -137,6 +140,65 @@ async def resolve_invit_hash(invit_hash,expired_secends = 60 * 5):
     # cache.set(cache_key,rel,expired_secends)
     return rel
   return None
+
+
+@client.on(events.NewMessage(incoming=True, from_users='blueseamusic_bot'))
+# @client.on(events.NewMessage(pattern='/checkin'))
+async def replier(event):
+  print(1)
+#print sender
+  # print(event.sender)
+  if '请输入' in event.raw_text:
+    photo_message = event.message
+    file_path = await client.download_media(photo_message)
+    print(file_path)
+    ocr_text = str(ocr.get_captcha(file_path))
+    await client.send_message('https://t.me/blueseamusic_bot', ocr_text)
+  if "错误" in event.raw_text:
+    await client.send_message('blueseamusic_bot', '/checkin')
+
+
+@client.on(events.NewMessage(incoming=True, from_users='https://t.me/Nebula_Emby'))
+
+# @client.on(events.NewMessage(outgoing=True, pattern='/checkin'))
+async def grap_invit_code(event):
+
+  # match all consective {a-z0-9A-Z} in a paragraph
+  # https://regex101.com/r/4Q5qZ5/1
+  print('start')
+  if '码' in event.raw_text:
+    regex = r"([a-zA-Z0-9-_]+)"
+
+    # test_str = ("再放几个码吧，祝大家心想事成\n\n"
+    #   "NrD-XThTyOpJQmz\n"
+    #   "AVIeodk9WSglMTz\n"
+    #   "EheYKKhQjPQcI5r\n"
+    #   "fNV8UpLklFFVRO9\n"
+    #   "jsKdjCciv_-gd8U\n\n"
+    #   "本次释放的邀请码不支持增加牛币")
+
+    matches = re.finditer(regex, event.raw_text)
+
+    for matchNum, match in enumerate(matches, start=1):
+        
+        # print ("Match {matchNum} was found at {start}-{end}: {match}".format(matchNum = matchNum, start = match.start(), end = match.end(), match = match.group()))
+        
+        # for groupNum in range(0, len(match.groups())):
+        #     groupNum = groupNum + 1
+            
+        #     print ("Group {groupNum} found at {start}-{end}: {group}".format(groupNum = groupNum, start = match.start(groupNum), end = match.end(groupNum), group = match.group(groupNum)))
+          
+      await client.send_message('https://t.me/Nebula_Account_bot', '\code ' + match.group())
+      
+
+
+
+    
+
+
+
+
+
 
 # client相关操作 目的：读取消息
 @client.on(events.MessageEdited)
@@ -254,7 +316,7 @@ where (l.channel_name = ? or l.chat_id = ?)  and l.status = 0  order by l.create
                   if isinstance(event,events.NewMessage.Event):# 新建事件
                     cache.set(send_cache_key,1,expire=86400) # 发送标记缓存一天
                   await bot.send_message(receiver, message_str,link_preview = True,parse_mode = 'markdown')
-                  await client.send_message('EdHubot', '/create sssimonwzmm')
+                  await client.send_message('https://t.me/tgLotteryBot', '/start')
                 else:
                   # 已发送该消息
                   logger.debug(f'REGEX send repeat. rule_name:{config["msg_unique_rule"]}  {CACHE_KEY_UNIQUE_SEND}:{channel_msg_url}')
@@ -274,7 +336,8 @@ where (l.channel_name = ? or l.chat_id = ?)  and l.status = 0  order by l.create
                   await bot.send_message(receiver, message_str,link_preview = True,parse_mode = 'markdown')
                   for i in range(0, 2):
                     # seed message with time interval of 2 second
-                    await client.send_message('EdHubot', '/create sssimonwzm')
+                    # await client.send_message('EdHubot', '/create sssimonwzm')
+                    await client.send_message('https://t.me/tgLotteryBot', '/start')
                     await asyncio.sleep(2)
                     
 
@@ -693,6 +756,20 @@ async def unsubscribe(event):
 
   raise events.StopPropagation
 
+@bot.on(events.NewMessage(pattern='/login'))
+async def login(event):
+  while True:
+
+    await client.send_message('https://t.me/blueseamusic_bot', '/checkin')
+    #sleep for 5 min
+    await asyncio.sleep(86400)
+
+# @bot.on(events.NewMessage(pattern='/grap_code'))
+# async def login(event):
+#   while True:
+
+#    await grap_invit_code(event)
+    
 
 @bot.on(events.NewMessage(pattern='/help'))
 async def start(event):
